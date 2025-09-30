@@ -15,6 +15,8 @@ services:
       CVAT_BASE_URL: http://DOMAIN_PLACEHOLDER:8080
       USE_TLS: 'no'
       CSRF_TRUSTED_ORIGINS: http://DOMAIN_PLACEHOLDER:8080,http://localhost:8080
+      EMAIL_HOST_USER: ADMIN_EMAIL_PLACEHOLDER
+      DEFAULT_FROM_EMAIL: ADMIN_EMAIL_PLACEHOLDER
     volumes:
       - cvat_share:CACHE_MOUNT_PLACEHOLDER/share:rw
       - cvat_logs:CACHE_MOUNT_PLACEHOLDER/logs:rw
