@@ -1,0 +1,107 @@
+services:
+  cvat_server:
+    environment:
+      DJANGO_MODWSGI_EXTRA_ARGS: ''
+      ALLOWED_HOSTS: '*'
+      CVAT_REDIS_HOST: cvat_redis_inmem
+      CVAT_POSTGRES_HOST: DB_HOST_PLACEHOLDER
+      CVAT_POSTGRES_DBNAME: cvat
+      CVAT_POSTGRES_USER: cvat_user
+      CVAT_POSTGRES_PASSWORD: DB_PASSWORD_PLACEHOLDER
+      CVAT_REGION: REGION_PLACEHOLDER
+      ADMIN_PASSWORD: ADMIN_PASSWORD_PLACEHOLDER
+      CVAT_SHARE_URL: /home/django/share
+      CVAT_ANALYTICS: 0
+      CVAT_BASE_URL: http://DOMAIN_PLACEHOLDER:8080
+      USE_TLS: 'no'
+      CSRF_TRUSTED_ORIGINS: http://DOMAIN_PLACEHOLDER:8080,http://localhost:8080
+    volumes:
+      - cvat_share:CACHE_MOUNT_PLACEHOLDER/share:rw
+      - cvat_logs:CACHE_MOUNT_PLACEHOLDER/logs:rw
+      - cvat_keys:CACHE_MOUNT_PLACEHOLDER/keys:rw
+    restart: unless-stopped
+    depends_on:
+      - cvat_redis_inmem
+      - cvat_redis_ondisk
+      - cvat_opa
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.cvat.loadbalancer.server.port: "8080"
+      traefik.http.routers.cvat.rule: "(PathPrefix(\"/api/\") || PathPrefix(\"/static/\") || PathPrefix(\"/admin\") || PathPrefix(\"/django-rq\"))"
+      traefik.http.routers.cvat.entrypoints: web
+      traefik.http.routers.cvat.priority: "100"
+
+  cvat_worker_import:
+    environment:
+      CVAT_POSTGRES_HOST: DB_HOST_PLACEHOLDER
+      CVAT_POSTGRES_DBNAME: cvat
+      CVAT_POSTGRES_USER: cvat_user
+      CVAT_POSTGRES_PASSWORD: DB_PASSWORD_PLACEHOLDER
+      CVAT_REDIS_HOST: cvat_redis_inmem
+    volumes:
+      - cvat_share:CACHE_MOUNT_PLACEHOLDER/share:rw
+    restart: unless-stopped
+
+  cvat_worker_export:
+    environment:
+      CVAT_POSTGRES_HOST: DB_HOST_PLACEHOLDER
+      CVAT_POSTGRES_DBNAME: cvat
+      CVAT_POSTGRES_USER: cvat_user
+      CVAT_POSTGRES_PASSWORD: DB_PASSWORD_PLACEHOLDER
+      CVAT_REDIS_HOST: cvat_redis_inmem
+    volumes:
+      - cvat_share:CACHE_MOUNT_PLACEHOLDER/share:rw
+    restart: unless-stopped
+
+  cvat_worker_annotation:
+    environment:
+      CVAT_POSTGRES_HOST: DB_HOST_PLACEHOLDER
+      CVAT_POSTGRES_DBNAME: cvat
+      CVAT_POSTGRES_USER: cvat_user
+      CVAT_POSTGRES_PASSWORD: DB_PASSWORD_PLACEHOLDER
+      CVAT_REDIS_HOST: cvat_redis_inmem
+    volumes:
+      - cvat_share:CACHE_MOUNT_PLACEHOLDER/share:rw
+    restart: unless-stopped
+
+  cvat_worker_webhooks:
+    environment:
+      CVAT_POSTGRES_HOST: DB_HOST_PLACEHOLDER
+      CVAT_POSTGRES_DBNAME: cvat
+      CVAT_POSTGRES_USER: cvat_user
+      CVAT_POSTGRES_PASSWORD: DB_PASSWORD_PLACEHOLDER
+      CVAT_REDIS_HOST: cvat_redis_inmem
+    restart: unless-stopped
+
+  cvat_ui:
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.cvat-ui.loadbalancer.server.port: "8000"
+      traefik.http.routers.cvat-ui.rule: "PathPrefix(\"/\")"
+      traefik.http.routers.cvat-ui.entrypoints: web
+      traefik.http.routers.cvat-ui.priority: "50"
+
+  cvat_db:
+    deploy:
+      replicas: 0
+
+volumes:
+  cvat_share:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: CACHE_MOUNT_PLACEHOLDER/share
+  cvat_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: CACHE_MOUNT_PLACEHOLDER/logs
+  cvat_keys:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: CACHE_MOUNT_PLACEHOLDER/keys
