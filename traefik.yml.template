@@ -5,21 +5,6 @@ api:
 entryPoints:
   web:
     address: ":80"
-    http:
-      redirections:
-        entrypoint:
-          to: websecure
-          scheme: https
-  websecure:
-    address: ":443"
-
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: ADMIN_EMAIL_PLACEHOLDER
-      storage: /letsencrypt/acme.json
-      httpChallenge:
-        entryPoint: web
 
 providers:
   docker:
