@@ -3,7 +3,5 @@ http:
     api:
       rule: "PathPrefix(`/api/traefik`)"
       entrypoints:
-        - websecure
+        - web
       service: api@internal
-      tls:
-        certResolver: letsencrypt
