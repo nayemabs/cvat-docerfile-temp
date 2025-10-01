@@ -5,6 +5,8 @@ api:
 entryPoints:
   web:
     address: ":80"
+  websecure:
+    address: ":443"
 
 providers:
   docker:
@@ -13,3 +15,12 @@ providers:
     network: cvat_cvat
   file:
     filename: /etc/traefik/dynamic.yml
+
+# Self-signed certificate for Cloudflare Full mode
+tls:
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: default
+        domain:
+          main: "cvat.REGION_PLACEHOLDER.DOMAIN_PLACEHOLDER"
