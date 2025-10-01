@@ -5,4 +5,4 @@ http:
       entrypoints:
         - websecure
       service: api@internal
-      tls: {}
+      tls: true
