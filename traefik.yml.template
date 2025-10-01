@@ -22,17 +22,11 @@ providers:
   file:
     filename: /etc/traefik/dynamic.yml
 
-# Generate self-signed certificate for Cloudflare Full mode
+# Generate default self-signed certificate
 tls:
-  options:
-    default:
-      sslStrategies:
-        - "tls.SniStrict"
   stores:
     default:
       defaultGeneratedCert:
-        resolver: "default"
+        resolver: ""
         domain:
-          main: "*.DOMAIN_PLACEHOLDER"
-          sans:
-            - "DOMAIN_PLACEHOLDER"
+          main: "DOMAIN_PLACEHOLDER"
