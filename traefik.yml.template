@@ -22,11 +22,7 @@ providers:
   file:
     filename: /etc/traefik/dynamic.yml
 
-# Generate default self-signed certificate
 tls:
-  stores:
+  options:
     default:
-      defaultGeneratedCert:
-        resolver: ""
-        domain:
-          main: "DOMAIN_PLACEHOLDER"
+      minVersion: "VersionTLS12"
