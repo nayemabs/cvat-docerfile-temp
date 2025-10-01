@@ -30,8 +30,10 @@ services:
       traefik.enable: "true"
       traefik.http.services.cvat.loadbalancer.server.port: "8080"
       traefik.http.routers.cvat.rule: "(PathPrefix(\"/api/\") || PathPrefix(\"/static/\") || PathPrefix(\"/admin\") || PathPrefix(\"/django-rq\"))"
-      traefik.http.routers.cvat.entrypoints: web
+      traefik.http.routers.cvat.entrypoints: websecure
       traefik.http.routers.cvat.priority: "100"
+      traefik.http.routers.cvat.tls: "true"
+      traefik.http.routers.cvat.tls.certresolver: letsencrypt
 
   cvat_worker_import:
     environment:
@@ -81,8 +83,10 @@ services:
       traefik.enable: "true"
       traefik.http.services.cvat-ui.loadbalancer.server.port: "8000"
       traefik.http.routers.cvat-ui.rule: "PathPrefix(\"/\")"
-      traefik.http.routers.cvat-ui.entrypoints: web
+      traefik.http.routers.cvat-ui.entrypoints: websecure
       traefik.http.routers.cvat-ui.priority: "50"
+      traefik.http.routers.cvat-ui.tls: "true"
+      traefik.http.routers.cvat-ui.tls.certresolver: letsencrypt
 
   cvat_db:
     deploy:
